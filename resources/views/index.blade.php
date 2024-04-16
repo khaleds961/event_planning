@@ -8,7 +8,8 @@
 
                     @if (session('success'))
                         <div class="alert-success">
-                            <img class="image-style" src="{{asset('images/success_icon.png')}}" alt="success" width="50px" height="50px">
+                            <img class="image-style" src="{{ asset('images/success_icon.png') }}" alt="success" width="50px"
+                                height="50px">
                             <h4>{{ session('success') }}</h4>
                         </div>
                     @endif
@@ -87,8 +88,12 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Phone Number</label>
-                                    <input class="input--style-4" type="text" name="phone_number"
-                                        value="{{ old('phone_number') }}">
+                                    <div class="d-flex">
+                                        <img src="{{ asset('images/lebanon.png') }}" alt="phone-code" width="50"
+                                            height="50" style="background: lightgrey;border-raduis:15px">
+                                        <input class="input--style-4" type="text" name="phone_number"
+                                            value="{{ old('phone_number') }}">
+                                    </div>
                                     @error('phone_number')
                                         <span class="errs">{{ $message }}</span>
                                     @enderror

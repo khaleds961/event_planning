@@ -13,20 +13,14 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Spatie\FlareClient\View;
 use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class GeneralController extends Controller
 {
     public function storeUser(Request $request)
     {
         try {
-
-            // Get the raw data from the request
-            $input = $request->all();
-
-            // Check if the birthday field exists and replace '/' with '-'
-            $input['birthday'] = date('Y-m-d', strtotime($request->birthday));
-
-            // return $input['birthday'];
 
             Validator::extend('at_least_ten_years_ago', function ($attribute, $value, $parameters, $validator) {
                 $tenYearsAgo = now()->subYears(10);
@@ -58,25 +52,29 @@ class GeneralController extends Controller
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
                 'gender' => $request->gender,
-                'birthday' => $input['birthday'],
+                'birthday' => $request->birthday,
                 'code' => '#' . $code
             ]);
 
+
             if ($client->id) {
+
+                // $simpleQr = QrCode::size(120)->generate('#' . $code);
 
                 $details = [
                     'id' => $client->id,
                     'name' => $client->firstname . ' ' . $client->lastname,
                     'email' => $client->email,
-                    'code' => $client->code
+                    'code' => $client->code,
+                    // 'simple' => $simpleQr
                 ];
 
-                $pdf = PDF::loadView('layouts.pdflayout', $details);
+                $pdf = PDf::loadView('layouts.pdflayout', $details);
                 $pdfContent = $pdf->output();
 
                 $receiver_email = $client->email;
-                // $sender_email = env('MAIL_FROM_ADDRESS');
-                $sender_email = 'me@gmail.com';
+                $sender_email = env('MAIL_FROM_ADDRESS');
+                // $sender_email = 'me@gmail.com';
 
                 Mail::send('layouts.email', $details, function ($message) use ($sender_email, $receiver_email, $pdfContent) {
                     $message->from($sender_email, 'Events Planner');

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
         body {
@@ -22,13 +23,17 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Welcome to Our Event</h1>
 
     <div class="content">
         <p>Dear <strong>{{ $name }}</strong>,</p>
-        <p>Your Code is:</p>
-        <p><strong>{{ $code }}</strong></p>
+        <p>Your Qr Code is:</p>
+        <p>
+            <img src="data:image/png;base64, {!! base64_encode(QrCode::size(200)->generate('#' . $code)) !!} ">
+
+        </p>
     </div>
 
     <div class="footer">
@@ -36,4 +41,5 @@
         <strong>Events Planner Team</strong>
     </div>
 </body>
+
 </html>
